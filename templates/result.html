@@ -1,0 +1,403 @@
+{% extends "base.html" %}
+{% set active_page = 'home' %}
+
+{% block title %}Prediction Result - Loan Default Analysis{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .result-card {
+        text-align: center;
+        padding: 50px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .result-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+    }
+
+    .result-card.success::before {
+        background: linear-gradient(90deg, #10b981, #34d399, #6ee7b7);
+    }
+
+    .result-card.danger::before {
+        background: linear-gradient(90deg, #ef4444, #f87171, #fca5a5);
+    }
+
+    .result-icon {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        font-size: 3.5rem;
+        position: relative;
+        animation: iconPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    .result-icon.success {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(52, 211, 153, 0.1));
+        border: 2px solid rgba(16, 185, 129, 0.5);
+        color: #10b981;
+        box-shadow: 0 0 40px rgba(16, 185, 129, 0.3);
+    }
+
+    .result-icon.danger {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(248, 113, 113, 0.1));
+        border: 2px solid rgba(239, 68, 68, 0.5);
+        color: #ef4444;
+        box-shadow: 0 0 40px rgba(239, 68, 68, 0.3);
+    }
+
+    .result-icon::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        animation: ripple 2s ease-out infinite;
+    }
+
+    .result-icon.success::after {
+        border: 2px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .result-icon.danger::after {
+        border: 2px solid rgba(239, 68, 68, 0.3);
+    }
+
+    @keyframes ripple {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        100% {
+            transform: scale(1.5);
+            opacity: 0;
+        }
+    }
+
+    .result-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+        letter-spacing: -1px;
+    }
+
+    .result-title.success {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .result-title.danger {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .result-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+    }
+
+    .probability-bar {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 25px 30px;
+        margin-top: 30px;
+        border: 1px solid var(--border-color);
+    }
+
+    .probability-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .probability-label span:first-child {
+        color: var(--text-secondary);
+    }
+
+    .probability-label span:last-child {
+        font-size: 1.3rem;
+    }
+
+    .probability-label.success span:last-child {
+        color: #10b981;
+    }
+
+    .probability-label.danger span:last-child {
+        color: #ef4444;
+    }
+
+    .progress-track {
+        height: 12px;
+        background: rgba(6, 182, 212, 0.12);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 1.5s ease-out;
+        position: relative;
+    }
+
+    .progress-fill.success {
+        background: linear-gradient(90deg, #10b981, #34d399);
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+    }
+
+    .progress-fill.danger {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+    }
+
+    .progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .insight-cards {
+        margin-top: 40px;
+    }
+
+    .insight-card {
+        background: rgba(6, 182, 212, 0.06);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 25px;
+        text-align: left;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .insight-card:hover {
+        border-color: var(--border-glow);
+        transform: translateY(-5px);
+    }
+
+    .insight-card h6 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--accent-1);
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    .insight-card h6 i {
+        font-size: 1.1rem;
+    }
+
+    .insight-card p {
+        color: var(--text-secondary);
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-top: 50px;
+    }
+
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        animation: confetti-fall 3s ease-out forwards;
+        z-index: 1000;
+    }
+
+    @keyframes confetti-fall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+
+        100% {
+            transform: translateY(100vh) rotate(720deg);
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <h1 class="glow-text"><i class="fas fa-chart-pie"></i> Risk Assessment Complete</h1>
+    <p>Your loan application has been analyzed by our AI model</p>
+</div>
+
+<!-- Result Card -->
+<div class="result-container">
+    <div class="glass-card result-card {% if prediction == 0 %}success{% else %}danger{% endif %}">
+        <div class="result-icon {% if prediction == 0 %}success{% else %}danger{% endif %}">
+            {% if prediction == 0 %}
+            <i class="fas fa-check-circle"></i>
+            {% else %}
+            <i class="fas fa-exclamation-triangle"></i>
+            {% endif %}
+        </div>
+
+        <h2 class="result-title {% if prediction == 0 %}success{% else %}danger{% endif %}">
+            {% if prediction == 0 %}
+            Low Default Risk
+            {% else %}
+            High Default Risk
+            {% endif %}
+        </h2>
+
+        <p class="result-subtitle">
+            {% if prediction == 0 %}
+            This application shows strong financial indicators for loan approval
+            {% else %}
+            This application may require additional review or conditions
+            {% endif %}
+        </p>
+
+        {% if probability is not none %}
+        <div class="probability-bar">
+            <div class="probability-label {% if prediction == 0 %}success{% else %}danger{% endif %}">
+                <span><i class="fas fa-brain"></i> Model Confidence</span>
+                <span>{{ "%.1f"|format(probability * 100) }}%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill {% if prediction == 0 %}success{% else %}danger{% endif %}"
+                    style="width: {{ probability * 100 }}%"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Insight Cards -->
+        <div class="row g-4 insight-cards">
+            <div class="col-md-4">
+                <div class="insight-card">
+                    <h6><i class="fas fa-robot"></i> AI Model</h6>
+                    <p>Random Forest classifier trained on 255K+ loan records with 88.6% accuracy</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="insight-card">
+                    <h6><i class="fas fa-cogs"></i> Features Used</h6>
+                    <p>16 financial indicators including credit score, income, and loan details</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="insight-card">
+                    <h6><i class="fas fa-info-circle"></i> Recommendation</h6>
+                    <p>
+                        {% if prediction == 0 %}
+                        Consider approving with standard terms and conditions
+                        {% else %}
+                        Review additional documents or consider different terms
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="/" class="btn btn-primary-custom btn-lg">
+                <i class="fas fa-redo"></i> New Prediction
+            </a>
+            <a href="/about" class="btn btn-secondary-custom btn-lg">
+                <i class="fas fa-info-circle"></i> Learn More
+            </a>
+            <a href="/stats" class="btn btn-secondary-custom btn-lg">
+                <i class="fas fa-chart-bar"></i> View Stats
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animate probability bar on load
+    document.addEventListener('DOMContentLoaded', function () {
+        const fill = document.querySelector('.progress-fill');
+        if (fill) {
+            const width = fill.style.width;
+            fill.style.width = '0%';
+            setTimeout(() => {
+                fill.style.width = width;
+            }, 300);
+        }
+
+        // Confetti effect for low risk results
+        {% if prediction == 0 %}
+        createConfetti();
+        {% endif %}
+    });
+
+    function createConfetti() {
+        const colors = ['#10b981', '#34d399', '#06b6d4', '#22c55e', '#2563eb'];
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }, i * 50);
+        }
+    }
+</script>
+{% endblock %}

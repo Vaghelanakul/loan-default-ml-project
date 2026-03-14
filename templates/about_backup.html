@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Loan Default Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0f0c29);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 1;
+            padding: 40px 0;
+        }
+
+        /* Header Styles */
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .header-section h1 i {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 15px;
+        }
+
+        /* Navigation Links */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: slideDown 0.8s ease-out 0.1s both;
+        }
+
+        .nav-link-custom {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-link-custom:hover,
+        .nav-link-custom.active {
+            background: rgba(99, 102, 241, 0.3);
+            color: #fff;
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            padding: 50px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section Styles */
+        .about-title {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #a855f7;
+            font-size: 1.3rem;
+        }
+
+        .section-text {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon i {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feature-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        /* Features List */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .feature-item i {
+            color: #a855f7;
+        }
+
+        /* Models Section */
+        .model-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 5px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .model-badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .model-badge.best {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        /* Button */
+        .btn-home {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+            border: none;
+            border-radius: 14px;
+            padding: 16px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-home::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-home:hover::before {
+            left: 100%;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.5);
+            color: #fff;
+        }
+
+        .btn-home i {
+            margin-right: 10px;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            margin: 40px 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .footer i {
+            color: #a855f7;
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .glass-card {
+                padding: 30px 20px;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating Particles -->
+    <div class="particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s; animation-duration: 12s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 4s; animation-duration: 18s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 3s; animation-duration: 16s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 2s; animation-duration: 17s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 1s; animation-duration: 19s;"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="container">
+            <!-- Navigation -->
+            <div class="nav-links">
+                <a href="/" class="nav-link-custom"><i class="fas fa-home"></i> Home</a>
+                <a href="/about" class="nav-link-custom active"><i class="fas fa-info-circle"></i> About</a>
+            </div>
+
+            <!-- Header -->
+            <div class="header-section">
+                <h1><i class="fas fa-info-circle"></i>About This Project</h1>
+            </div>
+
+            <!-- Main Card -->
+            <div class="glass-card">
+                <h2 class="about-title">Loan Default Prediction - ML Project</h2>
+
+                <!-- Problem & Dataset -->
+                <div class="row mb-5">
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                            <h5 class="feature-title">Problem Statement</h5>
+                            <p class="feature-text">Predict whether a loan applicant will default on their loan payment
+                                based on various demographic and financial features. This helps banks assess risk before
+                                approving loans.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h5 class="feature-title">Dataset</h5>
+                            <p class="feature-text">The dataset contains 255,000+ records with 17 features including
+                                Age, Income, Credit Score, Loan Amount, Employment Type, and more financial indicators.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Features Used -->
+                <h5 class="section-title"><i class="fas fa-cogs"></i> Features Used in Prediction</h5>
+                <div class="features-grid mb-5">
+                    <div class="feature-item"><i class="fas fa-user"></i> Age</div>
+                    <div class="feature-item"><i class="fas fa-dollar-sign"></i> Income</div>
+                    <div class="feature-item"><i class="fas fa-money-bill"></i> Loan Amount</div>
+                    <div class="feature-item"><i class="fas fa-star"></i> Credit Score</div>
+                    <div class="feature-item"><i class="fas fa-clock"></i> Months Employed</div>
+                    <div class="feature-item"><i class="fas fa-list-ol"></i> Credit Lines</div>
+                    <div class="feature-item"><i class="fas fa-percent"></i> Interest Rate</div>
+                    <div class="feature-item"><i class="fas fa-calendar"></i> Loan Term</div>
+                    <div class="feature-item"><i class="fas fa-balance-scale"></i> DTI Ratio</div>
+                    <div class="feature-item"><i class="fas fa-graduation-cap"></i> Education</div>
+                    <div class="feature-item"><i class="fas fa-briefcase"></i> Employment Type</div>
+                    <div class="feature-item"><i class="fas fa-ring"></i> Marital Status</div>
+                    <div class="feature-item"><i class="fas fa-home"></i> Has Mortgage</div>
+                    <div class="feature-item"><i class="fas fa-users"></i> Has Dependents</div>
+                    <div class="feature-item"><i class="fas fa-tag"></i> Loan Purpose</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Models -->
+                <h5 class="section-title"><i class="fas fa-brain"></i> Machine Learning Models Implemented</h5>
+                <div class="text-center mb-5">
+                    <span class="model-badge"><i class="fas fa-chart-line"></i> Logistic Regression (Scratch +
+                        Library)</span>
+                    <span class="model-badge"><i class="fas fa-tree"></i> Decision Tree</span>
+                    <span class="model-badge best"><i class="fas fa-trophy"></i> Random Forest (Best)</span>
+                    <span class="model-badge"><i class="fas fa-rocket"></i> Gradient Boosting</span>
+                    <span class="model-badge"><i class="fas fa-project-diagram"></i> K-Nearest Neighbors</span>
+                </div>
+
+                <!-- Button -->
+                <div class="text-center">
+                    <a href="/" class="btn-home">
+                        <i class="fas fa-magic"></i> Try Prediction
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p><i class="fas fa-graduation-cap"></i> Darshan University - AI/ML Project</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
