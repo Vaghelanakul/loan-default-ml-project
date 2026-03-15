@@ -11,6 +11,7 @@ from flask import Flask, render_template, request, jsonify
 import pickle
 import numpy as np
 import pandas as pd
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -196,14 +197,14 @@ def stats():
     return render_template('stats.html')
 
 
-# =============================================================================
-# Run the Flask Application
-# =============================================================================
+
+
 if __name__ == '__main__':
     print("\n" + "="*60)
     print("🏦 LOAN DEFAULT PREDICTION WEB APPLICATION")
     print("="*60)
     print("Starting Flask server...")
-    print("Open http://127.0.0.1:5000 in your browser")
     print("="*60 + "\n")
-    app.run(debug=True, port=5000)
+
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port, debug=True)
