@@ -14,5 +14,4 @@ flask==2.3.3
 gunicorn==21.2.0
 
 # Additional utilities
-pickle5==0.0.11
 Werkzeug==2.3.7

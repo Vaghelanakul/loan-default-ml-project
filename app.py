@@ -8,7 +8,7 @@ This file contains:
 """
 
 from flask import Flask, render_template, request, jsonify
-import pickle
+import joblib
 import numpy as np
 import pandas as pd
 import os
@@ -18,21 +18,46 @@ app = Flask(__name__)
 
 # Load the trained model and preprocessors
 try:
-    with open('model.pkl', 'rb') as f:
-        model = pickle.load(f)
-    with open('scaler.pkl', 'rb') as f:
-        scaler = pickle.load(f)
-    with open('label_encoders.pkl', 'rb') as f:
-        label_encoders = pickle.load(f)
-    with open('feature_names.pkl', 'rb') as f:
-        feature_names = pickle.load(f)
-    print("✅ Model and preprocessors loaded successfully!")
+    # Prefer artifacts exported by notebook deployment cell.
+    model_path = 'loan_model.pkl' if os.path.exists('loan_model.pkl') else 'model.pkl'
+    features_path = 'features.pkl' if os.path.exists('features.pkl') else 'feature_names.pkl'
+
+    model = joblib.load(model_path)
+    scaler = joblib.load('scaler.pkl')
+    feature_names = joblib.load(features_path)
+
+    print(f"✅ Model loaded from: {model_path}")
+    print("✅ Scaler and features loaded successfully!")
 except FileNotFoundError:
     print("⚠️ Model files not found. Please run the notebook first to generate model files.")
     model = None
     scaler = None
-    label_encoders = None
     feature_names = None
+
+
+def preprocess_input(input_data):
+    """Match the notebook preprocessing used during training."""
+    numerical_to_scale = [
+        'Age', 'Income', 'LoanAmount', 'CreditScore', 'MonthsEmployed',
+        'NumCreditLines', 'InterestRate', 'LoanTerm', 'DTIRatio'
+    ]
+    multi_cat_cols = ['Education', 'EmploymentType', 'MaritalStatus', 'LoanPurpose']
+
+    # Match binary label encoding used in training (No->0, Yes->1)
+    binary_map = {'No': 0, 'Yes': 1}
+    input_data['HasMortgage'] = input_data['HasMortgage'].map(binary_map).fillna(0).astype(int)
+    input_data['HasDependents'] = input_data['HasDependents'].map(binary_map).fillna(0).astype(int)
+    input_data['HasCoSigner'] = input_data['HasCoSigner'].map(binary_map).fillna(0).astype(int)
+
+    # Match one-hot encoding behavior used in training.
+    input_encoded = pd.get_dummies(input_data, columns=multi_cat_cols, drop_first=True)
+
+    # Align to trained feature order and fill missing one-hot columns.
+    input_aligned = input_encoded.reindex(columns=feature_names, fill_value=0)
+
+    # Scale only the original numerical columns, like training.
+    input_aligned[numerical_to_scale] = scaler.transform(input_aligned[numerical_to_scale])
+    return input_aligned
 
 # Define categorical options for the form
 EDUCATION_OPTIONS = ["High School", "Bachelor's", "Master's", "PhD"]
@@ -61,6 +86,9 @@ def home():
 def predict():
     """Handle prediction request"""
     try:
+        if model is None or scaler is None or feature_names is None:
+            return render_template('error.html', error_message='Model artifacts are missing on server.')
+
         # Get form data
         age = int(request.form['age'])
         income = float(request.form['income'])
@@ -98,29 +126,11 @@ def predict():
             'LoanPurpose': [loan_purpose],
             'HasCoSigner': [has_cosigner]
         })
-        
-        # Define column types
-        numerical_cols = ['Age', 'Income', 'LoanAmount', 'CreditScore', 'MonthsEmployed', 
-                         'NumCreditLines', 'InterestRate', 'LoanTerm', 'DTIRatio']
-        categorical_cols = ['Education', 'EmploymentType', 'MaritalStatus', 
-                          'HasMortgage', 'HasDependents', 'LoanPurpose', 'HasCoSigner']
-        
-        # Scale numerical features ONLY
-        numerical_data = input_data[numerical_cols]
-        numerical_scaled = scaler.transform(numerical_data)
-        
-        # Encode categorical variables
-        categorical_encoded = []
-        for col in categorical_cols:
-            if col in label_encoders:
-                encoded_val = label_encoders[col].transform(input_data[col])[0]
-                categorical_encoded.append(encoded_val)
-        
-        # Combine scaled numerical + encoded categorical
-        input_final = np.concatenate([numerical_scaled[0], categorical_encoded]).reshape(1, -1)
+
+        input_final = preprocess_input(input_data)
         
         # Make prediction
-        prediction = model.predict(input_final)[0]
+        prediction = int(model.predict(input_final)[0])
         probability_array = model.predict_proba(input_final)[0]
         
         # Get the probability of the predicted class
@@ -141,33 +151,21 @@ def predict():
 def api_predict():
     """API endpoint for predictions (returns JSON)"""
     try:
+        if model is None or scaler is None or feature_names is None:
+            return jsonify({
+                'success': False,
+                'error': 'Model artifacts are missing on server.'
+            }), 500
+
         data = request.get_json()
         
         # Create input DataFrame
         input_data = pd.DataFrame([data])
-        
-        # Define column types
-        numerical_cols = ['Age', 'Income', 'LoanAmount', 'CreditScore', 'MonthsEmployed', 
-                         'NumCreditLines', 'InterestRate', 'LoanTerm', 'DTIRatio']
-        categorical_cols = ['Education', 'EmploymentType', 'MaritalStatus', 
-                          'HasMortgage', 'HasDependents', 'LoanPurpose', 'HasCoSigner']
-        
-        # Scale numerical features ONLY
-        numerical_data = input_data[numerical_cols]
-        numerical_scaled = scaler.transform(numerical_data)
-        
-        # Encode categorical variables
-        categorical_encoded = []
-        for col in categorical_cols:
-            if col in label_encoders and col in input_data.columns:
-                encoded_val = label_encoders[col].transform(input_data[col])[0]
-                categorical_encoded.append(encoded_val)
-        
-        # Combine scaled numerical + encoded categorical
-        input_final = np.concatenate([numerical_scaled[0], categorical_encoded]).reshape(1, -1)
+
+        input_final = preprocess_input(input_data)
         
         # Make prediction
-        prediction = model.predict(input_final)[0]
+        prediction = int(model.predict(input_final)[0])
         probability = model.predict_proba(input_final)[0]
         
         return jsonify({
