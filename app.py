@@ -17,6 +17,7 @@ import os
 app = Flask(__name__)
 
 # Load the trained model and preprocessors
+MODEL_LOAD_ERROR = None
 try:
     # Prefer artifacts exported by notebook deployment cell.
     model_path = 'loan_model.pkl' if os.path.exists('loan_model.pkl') else 'model.pkl'
@@ -28,8 +29,9 @@ try:
 
     print(f"✅ Model loaded from: {model_path}")
     print("✅ Scaler and features loaded successfully!")
-except FileNotFoundError:
-    print("⚠️ Model files not found. Please run the notebook first to generate model files.")
+except Exception as e:
+    MODEL_LOAD_ERROR = str(e)
+    print(f"⚠️ Model artifacts could not be loaded: {MODEL_LOAD_ERROR}")
     model = None
     scaler = None
     feature_names = None
@@ -87,7 +89,8 @@ def predict():
     """Handle prediction request"""
     try:
         if model is None or scaler is None or feature_names is None:
-            return render_template('error.html', error_message='Model artifacts are missing on server.')
+            detail = f" Details: {MODEL_LOAD_ERROR}" if MODEL_LOAD_ERROR else ''
+            return render_template('error.html', error_message='Model artifacts are unavailable or incompatible on server.' + detail)
 
         # Get form data
         age = int(request.form['age'])
@@ -154,7 +157,8 @@ def api_predict():
         if model is None or scaler is None or feature_names is None:
             return jsonify({
                 'success': False,
-                'error': 'Model artifacts are missing on server.'
+                'error': 'Model artifacts are unavailable or incompatible on server.',
+                'details': MODEL_LOAD_ERROR
             }), 500
 
         data = request.get_json()

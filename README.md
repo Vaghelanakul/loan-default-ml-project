@@ -120,7 +120,8 @@ git push heroku main
 1. Connect your GitHub repository
 2. Select Python environment
 3. Build command: `pip install -r requirements.txt`
-4. Start command: `gunicorn app:app`
+4. Start command: `gunicorn --bind 0.0.0.0:$PORT app:app`
+5. If your Render service has a Start Command set in dashboard settings, it overrides Procfile. Keep the dashboard command the same as step 4.
 
 ### Option 3: PythonAnywhere (Free)
 1. Upload project files
