@@ -293,7 +293,7 @@
 <div class="stats-hero">
     <h1 class="glow-text"><i class="fas fa-chart-pie"></i> Model Statistics</h1>
     <p class="mt-3" style="color: var(--text-secondary); font-size: 1.1rem;">
-        Detailed performance metrics for our Random Forest classifier
+        Evaluation summary of the final Random Forest model
     </p>
 </div>
 
@@ -370,7 +370,7 @@
     </div>
     <div class="card-body-custom">
         <p style="color: var(--text-secondary); text-align: center; margin-bottom: 20px;">
-            Model predictions vs actual outcomes on test dataset
+            Prediction outcomes compared with actual labels on the test split
         </p>
         <div class="confusion-matrix">
             <div class="matrix-cell tn">
@@ -539,7 +539,7 @@
     <i class="fas fa-info-circle"></i>
     <p>
         <strong>Note:</strong> These statistics are based on the test dataset (20% holdout).
-        The model was trained on 80% of the data (204,277 samples) and validated on 20% (51,070 samples).
+        The model was trained on 80% of the data (204,277 samples) and tested on 20% (51,070 samples).
         Feature importance values are normalized for visualization.
     </p>
 </div>

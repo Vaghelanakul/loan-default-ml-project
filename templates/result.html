@@ -279,7 +279,7 @@
 <!-- Page Header -->
 <div class="page-header">
     <h1 class="glow-text"><i class="fas fa-chart-pie"></i> Risk Assessment Complete</h1>
-    <p>Your loan application has been analyzed by our AI model</p>
+    <p>Prediction generated from the model trained in this project</p>
 </div>
 
 <!-- Result Card -->
@@ -303,9 +303,9 @@
 
         <p class="result-subtitle">
             {% if prediction == 0 %}
-            This application shows strong financial indicators for loan approval
+            This profile appears lower risk based on learned patterns
             {% else %}
-            This application may require additional review or conditions
+            This profile appears higher risk and may need manual review
             {% endif %}
         </p>
 
@@ -326,13 +326,13 @@
         <div class="row g-4 insight-cards">
             <div class="col-md-4">
                 <div class="insight-card">
-                    <h6><i class="fas fa-robot"></i> AI Model</h6>
-                    <p>Random Forest classifier trained on 255K+ loan records with 88.6% accuracy</p>
+                    <h6><i class="fas fa-robot"></i> Model Used</h6>
+                    <p>Random Forest classifier trained on 255K+ records with 88.6% accuracy</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="insight-card">
-                    <h6><i class="fas fa-cogs"></i> Features Used</h6>
+                    <h6><i class="fas fa-cogs"></i> Input Features</h6>
                     <p>16 financial indicators including credit score, income, and loan details</p>
                 </div>
             </div>
@@ -341,9 +341,9 @@
                     <h6><i class="fas fa-info-circle"></i> Recommendation</h6>
                     <p>
                         {% if prediction == 0 %}
-                        Consider approving with standard terms and conditions
+                        Can be considered under standard policy checks
                         {% else %}
-                        Review additional documents or consider different terms
+                        Suggest additional document verification and policy review
                         {% endif %}
                     </p>
                 </div>

@@ -1,40 +1,35 @@
-# 🏦 Loan Default Prediction - ML Project
+# Loan Default Prediction Project
 
-## Darshan University - AI/ML Subject
-
-A comprehensive Machine Learning project for predicting loan defaults using various ML algorithms.
+Semester project for AI/ML, focused on predicting whether a loan may default based on applicant and loan details.
 
 ---
 
-## 📋 Project Tasks Completed
+## What This Project Covers
 
-| Task | Title | Status |
-|------|-------|--------|
-| 1 | Problem Definition and Dataset Exploration | ✅ |
-| 2 | Data Cleaning and Pre-processing | ✅ |
-| 3 | Model Creation (From Scratch + Library) | ✅ |
-| 4 | Model Evaluation | ✅ |
-| 5 | Advanced Model Training | ✅ |
-| 6 | Visualization of Metrics | ✅ |
-| 7 | Flask Project Setup | ✅ |
-| 8 | Create Front End | ✅ |
-| 9 | Create Backend | ✅ |
-| 10 | Deployment | ✅ (Ready) |
+| Step | Work Done | Status |
+|------|-----------|--------|
+| 1 | Problem understanding and dataset exploration | Done |
+| 2 | Data cleaning and preprocessing | Done |
+| 3 | Model building (multiple algorithms) | Done |
+| 4 | Model evaluation and comparison | Done |
+| 5 | Model finalization (best model selection) | Done |
+| 6 | Flask app integration (frontend + backend) | Done |
+| 7 | Deployment setup files | Done |
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 ### Step 1: Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 2: Run the Jupyter Notebook
+### Step 2: Run the Jupyter Notebook (first time setup)
 Open `Loan_Default_ML_Project.ipynb` and run all cells to:
 - Explore and preprocess the data
 - Train models
-- Generate model files (model.pkl, scaler.pkl, etc.)
+- Generate model files (`model.pkl`, `scaler.pkl`, etc.)
 
 ### Step 3: Run the Flask Application
 ```bash
@@ -44,7 +39,7 @@ Then open `http://127.0.0.1:5000` in your browser.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 loan_ml_project/
@@ -72,7 +67,7 @@ loan_ml_project/
 
 ---
 
-## 📊 Dataset Features
+## Dataset Features
 
 | Feature | Description |
 |---------|-------------|
@@ -96,19 +91,19 @@ loan_ml_project/
 
 ---
 
-## 🤖 Models Implemented
+## Models Tried
 
-1. **Logistic Regression** (From Scratch + Sklearn)
+1. **Logistic Regression** (from scratch + scikit-learn)
 2. **Decision Tree Classifier**
-3. **Random Forest Classifier** ⭐ Best Model
+3. **Random Forest Classifier** (best performing)
 4. **Gradient Boosting Classifier**
 5. **K-Nearest Neighbors**
 
 ---
 
-## 🌐 Deployment (Task 10)
+## Deployment Notes
 
-### Option 1: Heroku (Free)
+### Option 1: Heroku
 ```bash
 # Install Heroku CLI, then:
 heroku login
@@ -116,27 +111,40 @@ heroku create your-app-name
 git push heroku main
 ```
 
-### Option 2: Render.com (Free)
+### Option 2: Render.com
 1. Connect your GitHub repository
 2. Select Python environment
 3. Build command: `pip install -r requirements.txt`
 4. Start command: `gunicorn --bind 0.0.0.0:$PORT app:app`
 5. If your Render service has a Start Command set in dashboard settings, it overrides Procfile. Keep the dashboard command the same as step 4.
 
-### Option 3: PythonAnywhere (Free)
+### Option 3: PythonAnywhere
 1. Upload project files
 2. Create a web app with Flask
 3. Configure WSGI file
 
 ---
 
-## 👨‍🎓 Author
+## Viva / Demo Flow (Quick)
 
-**Darshan University Student**  
-AI/ML Project - Loan Default Prediction
+1. Start from the problem statement: reduce default risk by using historical patterns.
+2. Explain preprocessing: handling categories, scaling numeric fields, feature alignment.
+3. Show why Random Forest was selected (best score among tested models).
+4. Run 2-3 sample predictions from the web form.
+5. Show the metrics page and discuss limitations.
+
+## Limitations
+
+- This model should support decision-making, not replace human review.
+- Performance depends on how similar new data is to the training data.
+- Threshold and false-negative cost can be tuned based on business policy.
+
+## Author
+
+Semester 6 AI/ML Project
 
 ---
 
-## 📝 License
+## License
 
 This project is for educational purposes only.

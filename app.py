@@ -1,11 +1,4 @@
-"""
-TASK 7, 8, 9: Flask Web Application for Loan Default Prediction
-===============================================================
-This file contains:
-- Task 7: Flask Project Setup
-- Task 8: Front End (HTML Templates)
-- Task 9: Backend (Handle user requests)
-"""
+"""Flask app for loan default prediction (semester project)."""
 
 from flask import Flask, render_template, request, jsonify
 import joblib
